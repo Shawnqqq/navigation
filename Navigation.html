@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>导航</title>
+    <link rel="stylesheet" href="./css/Navigation.css">
+</head>
+<body>
+    <div class="section-banner">Banner</div>
+    <div class="navigation" id="navigation">
+        <ul>
+            <li class="navigation-item" data-nav="section-1">section&nbsp;1</li>
+            <li class="navigation-item" data-nav="section-2">section&nbsp;2</li>
+            <li class="navigation-item" data-nav="section-3">section&nbsp;3</li>
+            <li class="navigation-item" data-nav="section-4">section&nbsp;4</li>
+            <li class="navigation-item" data-nav="section-5">section&nbsp;5</li>
+            <li class="navigation-item" data-nav="section-6">section&nbsp;6</li>
+        </ul>
+    </div>
+    <div class="content" id="section-1">section1</div>
+    <div class="content" id="section-2">section2</div>
+    <div class="content" id="section-3">section3</div>
+    <div class="content" id="section-4">section4</div>
+    <div class="content" id="section-5">section5</div>
+    <div class="content" id="section-6">section6</div>
+    <div class="footer">Section&nbsp;Footer</div>
+    <script>
+        const PAGE={
+            data:{
+                navContent:['section-1','section-2','section-3','section-4','section-5','section-6'],
+                navFixed: false,
+                navDistance: 150,
+                navHeight: 50,
+            },
+            init:function(){
+                this.bind();
+            },
+            bind:function(){
+                window.addEventListener("scroll",this.refreshNav);
+                let navigation=document.getElementById('navigation');
+                this.onEventListener(navigation,'click',"navigation-item",this.positionNav)
+            },
+            onEventListener:function(parent,active,childClassName,callback){
+                parent.addEventListener(active,function(e){
+                    e.target.className.indexOf(childClassName) >=0 && callback(e);
+                })
+            },
+            refreshNav:function(){
+                PAGE.fixedNavigation()
+                PAGE.heightLightNavigation()
+            },
+            fixedNavigation:function(){
+                let scrollTop = document.documentElement.scrollTop;
+                let navFixed = scrollTop >= PAGE.data.navDistance;
+                if(PAGE.data.navFixed !== navFixed){
+                    PAGE.data.navFixed =navFixed;
+                    let navigation =document.getElementById("navigation");
+                }if(navFixed){
+                    navigation.className = "navigation active";
+                }else{
+                    navigation.className = "navigation";
+                };
+            },
+            heightLightNavigation:function(){
+                let scroll = document.documentElement.scrollTop;
+                let filterNav =PAGE.data.navContent.filter( item =>{
+                    let distanceNav =document.getElementById(item).offsetTop;
+                    return scroll >= distanceNav-PAGE.data.navHeight;
+                })
+                let navContentId = filterNav.length ? filterNav[filterNav.length-1] : '';
+                let navigationItems = document.getElementsByClassName("navigation-item")
+                for(let i=0; i<navigationItems.length; i++){
+                    let navigationItem = navigationItems[i];
+                    let dataId =navigationItem.dataset.nav
+                    if(dataId === navContentId){
+                        navigationItem.className ='navigation-item active';
+                    }else{
+                        navigationItem.className ='navigation-item';
+                    }
+                }
+            },
+            positionNav:function(e){
+                let dataId = e.target.dataset.nav;
+                let offsetTop =document.getElementById(dataId).offsetTop;
+                document.documentElement.scrollTop = offsetTop;
+            }
+        }
+        PAGE.init();
+    </script>
+</body>
+</html>
