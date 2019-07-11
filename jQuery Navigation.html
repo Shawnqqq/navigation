@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>导航</title>
+    <link rel="stylesheet" href="./css/Navigation.css">
+    <script src="./jquery-3.4.1.min.js"></script>
+</head>
+<body>
+    <div class="section-banner">Banner</div>
+    <div class="navigation" id="navigation">
+        <ul>
+            <li class="navigation-item" data-nav="section-1">section&nbsp;1</li>
+            <li class="navigation-item" data-nav="section-2">section&nbsp;2</li>
+            <li class="navigation-item" data-nav="section-3">section&nbsp;3</li>
+            <li class="navigation-item" data-nav="section-4">section&nbsp;4</li>
+            <li class="navigation-item" data-nav="section-5">section&nbsp;5</li>
+            <li class="navigation-item" data-nav="section-6">section&nbsp;6</li>
+        </ul>
+    </div>
+    <div class="content" data-content="section-1">section1</div>
+    <div class="content" data-content="section-2">section2</div>
+    <div class="content" data-content="section-3">section3</div>
+    <div class="content" data-content="section-4">section4</div>
+    <div class="content" data-content="section-5">section5</div>
+    <div class="content" data-content="section-6">section6</div>
+    <div class="footer">Section&nbsp;Footer</div>
+    <script>
+    const PAGE={
+        data:{
+            navIndex:[0,1,2,3,4,5],
+            navFixed:false,
+            navDistance:150,
+            navHeight:50,
+        },
+        init:function(){
+            this.bind();
+        },
+        bind:function(){
+            $(window).on("scroll",this.refreshNav);
+            $('.navigation-item').on('click',this.positionNav);
+        },
+        refreshNav:function(){
+            PAGE.fixedNav();
+            PAGE.heightLightNav();
+        },
+        fixedNav:function(){
+            let scroll=$(window).scrollTop();
+            navFixed = scroll >= PAGE.data.navDistance;
+            if(navFixed !==PAGE.data.navFixed){
+                PAGE.data.navFixed = navFixed
+                if(navFixed){
+                    $('#navigation').attr('class','navigation active');
+                }else{
+                    $('#navigation').attr('class','navigation');
+                }
+            }
+        },
+        heightLightNav:function(){
+            let scroll=$(window).scrollTop();
+            let navContents =$('.content');
+            let navContent=Array.from(navContents);
+            let filterNav=PAGE.data.navIndex.filter(item=>{
+                let distanceNav =navContent[item].offsetTop
+                return scroll >= distanceNav-PAGE.data.navHeight
+            })
+            let contentIndex = filterNav.length ? filterNav[filterNav.length-1]:'-1'
+            let dataContent = contentIndex>=0 ? navContent[contentIndex].dataset.content:'';
+            for(let i=0;i<navContents.length;i++){
+                let navigationItem=$('.navigation-item')[i];
+                let dataItem =navigationItem.dataset.nav;
+                if(dataItem === dataContent){
+                    navigationItem.className ='navigation-item active';
+                }else{
+                    navigationItem.className ='navigation-item';
+                }
+            }
+        },
+        positionNav:function(e){
+            let dataId=e.target.dataset.nav;
+            let index =dataId.charAt(8)-1;
+            let offsetTop =$('.content')[index].offsetTop
+            $(window).scrollTop(offsetTop);
+        }
+    }
+    PAGE.init();
+    </script>
+</body>
+</html>

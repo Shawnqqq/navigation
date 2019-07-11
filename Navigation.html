@@ -71,7 +71,7 @@
                 let navigationItems = document.getElementsByClassName("navigation-item")
                 for(let i=0; i<navigationItems.length; i++){
                     let navigationItem = navigationItems[i];
-                    let dataId =navigationItem.dataset.nav
+                    let dataId =navigationItem.dataset.nav;
                     if(dataId === navContentId){
                         navigationItem.className ='navigation-item active';
                     }else{
