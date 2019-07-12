@@ -50,31 +50,22 @@
             if(navFixed !==PAGE.data.navFixed){
                 PAGE.data.navFixed = navFixed
                 if(navFixed){
-                    $('#navigation').attr('class','navigation active');
+                    $('#navigation').toggleClass('active');
                 }else{
-                    $('#navigation').attr('class','navigation');
+                    $('#navigation').toggleClass('active');
                 }
             }
         },
         heightLightNav:function(){
-            let scroll=$(window).scrollTop();
-            let navContents =$('.content');
-            let navContent=Array.from(navContents);
-            let filterNav=PAGE.data.navIndex.filter(item=>{
-                let distanceNav =navContent[item].offsetTop
-                return scroll >= distanceNav-PAGE.data.navHeight
-            })
-            let contentIndex = filterNav.length ? filterNav[filterNav.length-1]:'-1'
-            let dataContent = contentIndex>=0 ? navContent[contentIndex].dataset.content:'';
-            for(let i=0;i<navContents.length;i++){
-                let navigationItem=$('.navigation-item')[i];
-                let dataItem =navigationItem.dataset.nav;
-                if(dataItem === dataContent){
-                    navigationItem.className ='navigation-item active';
-                }else{
-                    navigationItem.className ='navigation-item';
+            let scroll= $(window).scrollTop();
+            let itemNav;
+            $.each($('.content'),(index,item)=>{
+                $('.navigation-item').removeClass('active');
+                if(scroll >= item.offsetTop-PAGE.data.navHeight){
+                    itemNav = $('.navigation-item')[index];      
                 }
-            }
+            })
+            $(itemNav).addClass("active")    
         },
         positionNav:function(e){
             let dataId=e.target.dataset.nav;
